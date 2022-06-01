@@ -1,55 +1,53 @@
 // https://stackoverflow.com/questions/36793628/frequency-and-pitch-relation-for-audioclip-unity3d
 // https://www.youtube.com/watch?v=LVWTQcZbLgY
 
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using TMPro;
 
 public class SoundController : MonoBehaviour
 {
-
+    [Header("High Note")]
     public AudioSource audioSourceA;
+    public float startNoteA = 0;
+    public float transposeA = 0;
+    public float incrementA = 0.1f;
+    public float volA = 1f;
+
+    [Header("Middle Note")]
     public AudioSource audioSourceB;
+    public float startNoteB = 0;
+    public float transposeB = 0;
+    public float incrementB = 0.1f;
+    public float volB = 1f;
+
+    [Header("Low Note")]
     public AudioSource audioSourceC;
-    float incrementA = 0.1f;
-    float incrementB = 0.1f;
-    float incrementC = 0.1f;
+    public float startNoteC = 12;
+    public float transposeC = 0;
+    public float incrementC = 0.1f;
+    public float volC = 0f;
 
     private float noteA, noteB, noteC;
-    private float startNoteA, startNoteB, startNoteC;
-    private float C = 0;
-    private float C2 = 12;
-    public float transposeA = 0;
-    public float transposeB = 1;
-    public float transposeC = 2;
+
+    public TMP_Text transposeAtext;
+    public TMP_Text noteAtext;
+    public TMP_Text transposeBtext;
+    public TMP_Text noteBtext;
+    public TMP_Text transposeCtext;
+    public TMP_Text noteCtext;
+    public TMP_Text volAtext;
+    public TMP_Text volBtext;
+    public TMP_Text volCtext;
+
+
     private float octave = 12;
-
-    //    if (Input.GetKeyDown("a")) note = 0;  // C
-    //if (Input.GetKeyDown("s")) note = 2;  // D
-    //if (Input.GetKeyDown("d")) note = 4;  // E
-    //if (Input.GetKeyDown("f")) note = 5;  // F
-    //if (Input.GetKeyDown("g")) note = 7;  // G
-    //if (Input.GetKeyDown("h")) note = 9;  // A
-    //if (Input.GetKeyDown("j")) note = 11; // B
-    //if (Input.GetKeyDown("k")) note = 12; // C
-    //if (Input.GetKeyDown("l")) note = 14; // D
-
-
-    // Top note
-
-    // Middle note
-
-    // Bottom note
-
-
-
 
     // Start is called before the first frame update
     void Start()
     {
-        startNoteA = C;
-        startNoteB = C2;
-        startNoteB = C;
         noteA = startNoteA;
         noteB = startNoteB;
         noteC = startNoteC;
@@ -63,10 +61,23 @@ public class SoundController : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-
+        UpdateText();
         PlayA();
         PlayB();
         PlayC();
+
+    }
+
+    private void UpdateText()
+    {
+        transposeAtext.text = "Transpose A = " + transposeA.ToString();
+        noteAtext.text = "Note A = " + noteA.ToString();
+        volAtext.text = "Vol A = " + volA.ToString();
+
+        transposeBtext.text = "Transpose B = " + transposeB.ToString();
+        noteBtext.text = "Note B = " + noteB.ToString();
+        volBtext.text = "Vol B = " + volB.ToString();
+
 
     }
 
@@ -75,22 +86,17 @@ public class SoundController : MonoBehaviour
         if (!audioSourceA) return;
 
         float inc = Mathf.Pow(2, (noteA + transposeA) / 12);
-
         audioSourceA.pitch = inc;
 
-        audioSourceA.volume = 1 - (inc - 1);
+        volA -= 1 / octave * incrementC;
+        audioSourceA.volume = volA;
 
         noteA += incrementA;
-        audioSourceA.volume -= incrementA;
         if (noteA >= startNoteA + octave)
         {
-            audioSourceA.volume = 1;
+            volA = 1;
             noteA = startNoteA;
         }
-
-        //float steps = octave / incrementA;
-        //print(steps);
-        //audioSourceA.volume -= steps;
 
 
     }
@@ -109,19 +115,24 @@ public class SoundController : MonoBehaviour
     {
         if (!audioSourceC) return;
 
-        float inc = Mathf.Pow(2, (noteA + transposeA) / 12);
+        float inc = Mathf.Pow(2, (noteC + transposeC) / 12);
 
         audioSourceC.pitch = inc;
-
-        audioSourceC.volume = (inc - 1);
-
+        audioSourceC.volume = volC;
 
         noteC += incrementC;
+        volC += 1 / octave * incrementC;
         if (noteC >= startNoteC + octave)
         {
-            audioSourceC.volume = 0;
+            //audioSourceC.volume = 0;
             noteC = startNoteC;
+            volC = 0;
         }
+
+        //// UPDATE TEXT
+        transposeCtext.text = "Transpose C = " + transposeC.ToString();
+        noteCtext.text = "Note C = " + noteC.ToString();
+        volCtext.text = "Vol C = " + volC.ToString();
     }
 
     //private void OnAudioFilterRead(float[] data, int channels)
