@@ -9,25 +9,28 @@ using TMPro;
 
 public class SoundController : MonoBehaviour
 {
+    [Header("Global stuff")]
+    public float octave = 24;
+    public float increment = 0.01f;
+    public bool isAscending = false;
+
+
     [Header("High Note")]
     public AudioSource audioSourceA;
     public float startNoteA = 0;
     public float transposeA = 0;
-    public float incrementA = 0.1f;
     public float volA = 1f;
 
     [Header("Middle Note")]
     public AudioSource audioSourceB;
     public float startNoteB = 0;
     public float transposeB = 0;
-    public float incrementB = 0.1f;
     public float volB = 1f;
 
     [Header("Low Note")]
     public AudioSource audioSourceC;
     public float startNoteC = 12;
     public float transposeC = 0;
-    public float incrementC = 0.1f;
     public float volC = 0f;
 
     private float noteA, noteB, noteC;
@@ -43,8 +46,6 @@ public class SoundController : MonoBehaviour
     public TMP_Text volCtext;
 
 
-    private float octave = 12;
-
     // Start is called before the first frame update
     void Start()
     {
@@ -56,75 +57,84 @@ public class SoundController : MonoBehaviour
         audioSourceB.volume = 1;
         audioSourceC.volume = 0;
 
+        if (!isAscending) increment = -Mathf.Abs(increment);
+        else increment = Mathf.Abs(increment);
+
     }
 
     // Update is called once per frame
-    void Update()
+    void FixedUpdate()
     {
-        UpdateText();
+
         PlayA();
         PlayB();
         PlayC();
-
-    }
-
-    private void UpdateText()
-    {
-        transposeAtext.text = "Transpose A = " + transposeA.ToString();
-        noteAtext.text = "Note A = " + noteA.ToString();
-        volAtext.text = "Vol A = " + volA.ToString();
-
-        transposeBtext.text = "Transpose B = " + transposeB.ToString();
-        noteBtext.text = "Note B = " + noteB.ToString();
-        volBtext.text = "Vol B = " + volB.ToString();
-
-
     }
 
     void PlayA()
     {
-        if (!audioSourceA) return;
+        if (!audioSourceA.isActiveAndEnabled) return;
 
         float inc = Mathf.Pow(2, (noteA + transposeA) / 12);
         audioSourceA.pitch = inc;
 
-        volA -= 1 / octave * incrementC;
+        volA -= 1 / octave * Mathf.Abs( increment);
         audioSourceA.volume = volA;
 
-        noteA += incrementA;
-        if (noteA >= startNoteA + octave)
+        noteA += increment;
+        if (isAscending && noteA >= startNoteA + octave)
         {
             volA = 1;
             noteA = startNoteA;
         }
-
+        if (!isAscending && noteA <= startNoteA - octave)
+        {
+            volA = 1;
+            noteA = startNoteA;
+        }
+        // UPDATE TEXT
+        transposeAtext.text = "Transpose A = " + transposeA.ToString();
+        noteAtext.text = "Note A = " + noteA.ToString();
+        volAtext.text = "Vol A = " + volA.ToString();
 
     }
     void PlayB()
     {
-        if (!audioSourceB) return;
+        if (!audioSourceB.isActiveAndEnabled) return;
         audioSourceB.pitch = Mathf.Pow(2, (noteB + transposeB) / 12);
 
-        noteB += incrementB;
-        if (noteB >= startNoteB + octave)
+        noteB += increment;
+        if (isAscending && noteB >= startNoteB + octave)
         {
             noteB = startNoteB;
         }
+        if (!isAscending && noteB <= startNoteB - octave)
+        {
+            noteB = startNoteB;
+        }
+        // UPDATE TEXT
+        transposeBtext.text = "Transpose B = " + transposeB.ToString();
+        noteBtext.text = "Note B = " + noteB.ToString();
+        volBtext.text = "Vol B = " + volB.ToString();
     }
     void PlayC()
     {
-        if (!audioSourceC) return;
+        //if (!audioSourceC.isPlaying) return;
 
         float inc = Mathf.Pow(2, (noteC + transposeC) / 12);
 
         audioSourceC.pitch = inc;
         audioSourceC.volume = volC;
 
-        noteC += incrementC;
-        volC += 1 / octave * incrementC;
-        if (noteC >= startNoteC + octave)
+        noteC += increment;
+        volC += 1 / octave * Mathf.Abs( increment);
+        if (isAscending && noteC >= startNoteC + octave)
         {
-            //audioSourceC.volume = 0;
+            noteC = startNoteC;
+            volC = 0;
+        }
+        if(!isAscending && noteC <= startNoteC - octave)
+        {
             noteC = startNoteC;
             volC = 0;
         }
