@@ -49,6 +49,7 @@ public class SoundController : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
+        print("START");
         noteA = startNoteA;
         noteB = startNoteB;
         noteC = startNoteC;
@@ -59,6 +60,8 @@ public class SoundController : MonoBehaviour
 
         if (!isAscending) increment = -Mathf.Abs(increment);
         else increment = Mathf.Abs(increment);
+
+        print(">>>" + increment);
 
     }
 
@@ -78,20 +81,20 @@ public class SoundController : MonoBehaviour
         float inc = Mathf.Pow(2, (noteA + transposeA) / 12);
         audioSourceA.pitch = inc;
 
-        volA -= 1 / octave * Mathf.Abs( increment);
+        volA -= 1 / octave * increment;
         audioSourceA.volume = volA;
 
         noteA += increment;
-        if (isAscending && noteA >= startNoteA + octave)
+        if (noteA >= startNoteA + octave)
         {
             volA = 1;
             noteA = startNoteA;
         }
-        if (!isAscending && noteA <= startNoteA - octave)
-        {
-            volA = 1;
-            noteA = startNoteA;
-        }
+        //if (!isAscending && noteA <= startNoteA - octave)
+        //{
+        //    volA = 1;
+        //    noteA = startNoteA;
+        //}
         // UPDATE TEXT
         transposeAtext.text = "Transpose A = " + transposeA.ToString();
         noteAtext.text = "Note A = " + noteA.ToString();
@@ -104,14 +107,14 @@ public class SoundController : MonoBehaviour
         audioSourceB.pitch = Mathf.Pow(2, (noteB + transposeB) / 12);
 
         noteB += increment;
-        if (isAscending && noteB >= startNoteB + octave)
+        if (noteB >= startNoteB + octave)
         {
             noteB = startNoteB;
         }
-        if (!isAscending && noteB <= startNoteB - octave)
-        {
-            noteB = startNoteB;
-        }
+        //if (!isAscending && noteB <= startNoteB - octave)
+        //{
+        //    noteB = startNoteB;
+        //}
         // UPDATE TEXT
         transposeBtext.text = "Transpose B = " + transposeB.ToString();
         noteBtext.text = "Note B = " + noteB.ToString();
@@ -127,17 +130,18 @@ public class SoundController : MonoBehaviour
         audioSourceC.volume = volC;
 
         noteC += increment;
-        volC += 1 / octave * Mathf.Abs( increment);
-        if (isAscending && noteC >= startNoteC + octave)
+
+        volC += 1 / octave * increment;
+        if (noteC >= startNoteC + octave)
         {
             noteC = startNoteC;
             volC = 0;
         }
-        if(!isAscending && noteC <= startNoteC - octave)
-        {
-            noteC = startNoteC;
-            volC = 0;
-        }
+        //if (!isAscending && noteC <= startNoteC - octave)
+        //{
+        //    noteC = startNoteC;
+        //    volC = 0;
+        //}
 
         //// UPDATE TEXT
         transposeCtext.text = "Transpose C = " + transposeC.ToString();

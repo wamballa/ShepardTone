@@ -25,8 +25,8 @@ public class Explorer : MonoBehaviour
 
     private void HandleInputs()
     {
-        if (Input.GetKey(KeyCode.KeypadPlus)) scale *= .99f;
-        if (Input.GetKey(KeyCode.KeypadMinus)) scale *= 1.01f;
+        if (Input.GetKey(KeyCode.UpArrow)) scale *= .99f;
+        if (Input.GetKey(KeyCode.DownArrow)) scale *= 1.01f;
 
         Vector2 dir = new Vector2(0.01f * scale, 0);
         float s = Mathf.Sin(angle);

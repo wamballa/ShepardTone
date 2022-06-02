@@ -26,12 +26,12 @@ Material:
     m_Ints: []
     m_Floats:
     - _Angle: 0
-    - _Color: 0.6
+    - _Color: 0.401
     - _MaxIter: 412
     - _Repeat: 10
     - _Speed: 0.1
     m_Colors:
-    - _Area: {r: 0.34819058, g: 0.07122754, b: 0.00027841574, a: 0.00015660885}
+    - _Area: {r: 0, g: 0, b: 0.72898173, a: 0.43774062}
   m_BuildTextureStacks: []
 --- !u!114 &856821687814997590
 MonoBehaviour:
