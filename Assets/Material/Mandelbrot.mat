@@ -35,7 +35,7 @@ Material:
     - _Repeat: 10
     - _Speed: 0.1
     m_Colors:
-    - _Area: {r: 0.390336, g: 0.23355648, b: 0.0000022033175, a: 0.0000021197586}
+    - _Area: {r: 0, g: 0, b: 1.9985347, a: 1.6937523}
   m_BuildTextureStacks: []
 --- !u!114 &856821687814997590
 MonoBehaviour:

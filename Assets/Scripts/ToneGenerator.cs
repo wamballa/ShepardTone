@@ -1,44 +1,77 @@
+using System.Collections;
 using UnityEngine;
 
 public class ToneGenerator : MonoBehaviour
 {
-    public AudioSource audioSource;
-    //AudioClip audioClip;
+    public AudioSource[] audioSource;
+    private int numberOfTones = 3;
+    float startValue = 1f;
+    float endValue = 0.5f;
+    float elapsedTime = 0f;
+    float[] elapsedTimes;
+    private float toneLength = 10;
+    private bool[] canPlay;
 
+    public enum Notes
+    {
+        A,
+        C
+    }
+    public Notes note;
 
     private void Start()
     {
-        audioSource = gameObject.AddComponent<AudioSource>();
-        audioSource.loop = true;
-        audioSource.clip = CreateClip(440f, 1, 0);
-        audioSource.Play();
+        // create array
+        audioSource = new AudioSource[numberOfTones];
+        canPlay = new bool[numberOfTones];
+        elapsedTimes = new float[numberOfTones];
+
+        for (int i = 0; i < 3; i++)
+        {
+            audioSource[i] = gameObject.AddComponent<AudioSource>();
+            audioSource[i].loop = true;
+            audioSource[i].clip = CreateClip(GetFrequency(note), 1);
+            audioSource[i].volume = 0;
+        }
+
+        audioSource[0].Play();
+        StartCoroutine(StartPlaying(1, 2));
+
         //PlayCMajorTone();
     }
 
-
-    public void PlayCMajorTone()
+    private IEnumerator StartPlaying(int i, float d)
     {
-        // Create an audio clip with a C major tone
-        int sampleRate = 44100;
-        float frequency = 261.6f; // C major
-        float duration = 1.0f;
-        int sampleCount = (int)(duration * sampleRate);
-        float[] samples = new float[sampleCount];
-        for (int i = 0; i < sampleCount; i++)
-        {
-            float t = (float)i / sampleRate;
-            samples[i] = Mathf.Sin(2 * Mathf.PI * frequency * t);
-        }
-        AudioClip clip = AudioClip.Create("C Major Tone", sampleCount, 1, sampleRate, false);
-        clip.SetData(samples, 0);
-
-        // Play the audio clip using the audio source
-        audioSource.loop = true;
-        audioSource.clip = clip;
-        audioSource.Play();
+        yield return new WaitForSeconds(d);
+        canPlay[i] = true;
+        audioSource[i].Play();
+        if (!canPlay[2]) StartCoroutine(StartPlaying(2, 2));
     }
 
-    public AudioClip CreateClip(float frequency, float duration, float step)
+    private void FixedUpdate()
+    {
+        SlideTone(0, toneLength);
+        if (canPlay[1]) SlideTone(1, toneLength);
+        if (canPlay[2]) SlideTone(2, toneLength);
+    }
+
+    float GetFrequency(Notes note)
+    {
+        switch (note)
+        {
+            case Notes.A:
+                return 440f;
+                break;
+            case Notes.C:
+                return 261;
+                break;
+            default:
+                return 0;
+                break;
+        }
+    }
+
+    public AudioClip CreateClip(float frequency, float duration)
     {
         int sampleRate = 44100;
         int sampleCount = (int)(sampleRate * duration);
@@ -50,7 +83,7 @@ public class ToneGenerator : MonoBehaviour
         {
             float t = (float)i / (float)sampleRate;
             samples[i] = Mathf.Sin(2 * Mathf.PI * frequency * t) * maxValue;
-            frequency -= step;
+            //frequency -= step;
         }
 
         AudioClip audioClip = AudioClip.Create("Tone", sampleCount, 1, sampleRate, false);
@@ -59,14 +92,29 @@ public class ToneGenerator : MonoBehaviour
 
     }
 
-    void SlideTone(float duration)
-    {
-        // Calculate the pitch to slide to based on the current time
-        float t = Time.time / duration;
-        float pitch = Mathf.Lerp(1.0f, 0.5f, t);
 
+    void SlideTone (int index, float d)
+    {
+        //time += lerpSpeed * Time.deltaTime;
+        float pitch = Mathf.Lerp(startValue, endValue, elapsedTimes[index] / d);
+        elapsedTimes[index] += Time.deltaTime;
+
+        
+        if (audioSource[index].volume < 1f)
+        {
+            audioSource[index].volume += 0.05f;
+        }
+        else audioSource[index].volume = 1f;
+
+        if (elapsedTimes[index] > d) {
+            elapsedTimes[index] = 0;
+            startValue = 1f;
+            audioSource[index].volume = 0;
+            print("BOOM");
+        };
         // Set the pitch of the audio source
-        audioSource.pitch = pitch;
+        audioSource[index].pitch = pitch;
     }
+
 }
 
