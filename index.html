@@ -1,0 +1,140 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Shepard Tone Demo</title>
+  <link rel="stylesheet" href="styles.css" />
+</head>
+<body>
+  <main class="app">
+    <h1>Shepard Tone</h1>
+    <p>
+      A Shepard tone is an auditory illusion made from overlapping tones that
+      seem to rise or fall forever without ever reaching an end.
+    </p>
+
+    <section class="controls" aria-label="Shepard tone controls">
+      <div class="control">
+        <label for="directionSelect">Direction</label>
+        <select id="directionSelect">
+          <option value="1">Rising</option>
+          <option value="-1" selected>Falling</option>
+        </select>
+      </div>
+
+      <div class="control">
+        <label for="modeSelect">Mode</label>
+        <select id="modeSelect">
+          <option value="glissando" selected>Risset Glissando</option>
+          <option value="discrete">Shepard Scale</option>
+          <option value="held">Held Glissando</option>
+        </select>
+        <div class="value">Continuous / Step</div>
+      </div>
+
+      <div class="control">
+        <label for="speedRange">Cycle Speed</label>
+        <input id="speedRange" type="range" min="0.02" max="0.35" step="0.01" value="0.08" />
+        <div class="value"><span id="speedValue">0.08</span> octaves / sec</div>
+      </div>
+
+      <div class="control">
+        <label for="baseRange">Center Frequency</label>
+        <input id="baseRange" type="range" min="110" max="440" step="1" value="203" />
+        <div class="value"><span id="baseValue">203</span> Hz</div>
+      </div>
+
+      <div class="control">
+        <label for="volumeRange">Volume</label>
+        <input id="volumeRange" type="range" min="0" max="0.35" step="0.01" value="0.35" />
+        <div class="value"><span id="volumeValue">35</span>%</div>
+      </div>
+
+      <div class="control">
+        <label for="timbreSelect">Timbre</label>
+        <select id="timbreSelect">
+          <option value="sine">Sine</option>
+          <option value="triangle">Triangle</option>
+          <option value="sawtooth">Sawtooth</option>
+          <option value="rich">Rich</option>
+          <option value="ghostly">Ghostly</option>
+          <option value="organ">Organ</option>
+          <option value="choir">Choir</option>
+          <option value="bell">Bell</option>
+          <option value="pulse">Pulse</option>
+          <option value="strings">Strings</option>
+          <option value="reference">Reference</option>
+          <option value="ooo-choir">Ooo Choir</option>
+          <option value="classic-risset" selected>Classic Risset</option>
+        </select>
+        <div class="value">Wave Shape</div>
+      </div>
+
+      <div class="control">
+        <label for="layersSelect">Layers</label>
+        <select id="layersSelect">
+          <option value="5">5</option>
+          <option value="7" selected>7</option>
+          <option value="9">9</option>
+          <option value="11">11</option>
+          <option value="13">13</option>
+          <option value="15">15</option>
+          <option value="17" selected>17</option>
+        </select>
+        <div class="value">Octave Voices</div>
+      </div>
+
+      <div class="control">
+        <label for="echoRange">Echo</label>
+        <input id="echoRange" type="range" min="0" max="0.35" step="0.01" value="0.14" />
+        <div class="value"><span id="echoValue">14</span>% mix</div>
+      </div>
+
+      <div class="control">
+        <label for="widthRange">Width</label>
+        <input id="widthRange" type="range" min="0" max="1" step="0.01" value="0.91" />
+        <div class="value"><span id="widthValue">91</span>% spread</div>
+      </div>
+
+      <div class="control">
+        <label for="spacingRange">Spacing</label>
+        <input id="spacingRange" type="range" min="0" max="1" step="0.01" value="1" />
+        <div class="value"><span id="spacingValue">100</span>% stagger</div>
+      </div>
+    </section>
+
+    <div class="button-row">
+      <button id="toggleButton" type="button">Start Audio</button>
+      <button id="panicButton" type="button">Fade Out</button>
+    </div>
+
+    <section class="visualizer" aria-labelledby="visualizerTitle">
+      <div class="visualizer-header">
+        <div>
+          <div class="status-label">Visualizer</div>
+          <h2 id="visualizerTitle">Live Octave Motion</h2>
+        </div>
+        <p class="visualizer-copy">
+          The bright curve shows the output waveform, while the glowing dots track
+          each octave layer sliding through the Shepard cycle.
+        </p>
+      </div>
+      <canvas id="visualizerCanvas" width="960" height="420"></canvas>
+    </section>
+
+    <div class="status" aria-live="polite">
+      <div>
+        <div class="status-label">Engine Status</div>
+        <strong id="statusText">Idle</strong>
+      </div>
+      <div class="note">
+        Browsers require a user gesture before sound starts, so click
+        <strong>Start Audio</strong> first.
+      </div>
+    </div>
+  </main>
+
+  <script src="script.js"></script>
+</body>
+</html>
